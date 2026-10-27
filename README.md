@@ -143,7 +143,7 @@ python app.py
 
 | Member name | Roll number | Category | Variant implemented |
 |---|---|---|---|
-| | | OS Command Injection | In-band |
+|Bayya Shivani|IIT2024275| OS Command Injection | In-band |
 
 ---
 

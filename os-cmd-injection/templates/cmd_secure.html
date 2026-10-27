@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Secure{% endblock %}
+{% block content %}
+<h1 class="secure-title">Secure ping tool</h1>
+<p>Same payload (<code>127.0.0.1; whoami</code>) now fails: no shell is
+   invoked, the command runs as an argument vector, and the host is checked
+   against an allow-list before use.</p>
+
+<form method="post" id="pingFormSecure">
+  <label>Host <input type="text" name="host" placeholder="127.0.0.1" autocomplete="off" required></label>
+  <button type="submit" id="submitBtnSecure">Ping</button>
+</form>
+
+{% if error %}
+  <p class="err">{{ error }}</p>
+{% endif %}
+
+{% if output %}
+  <h3>Output:</h3>
+  <pre class="output">{{ output }}</pre>
+{% endif %}
+
+{% if history %}
+  <h3>Recent attempts (this session)</h3>
+  <table class="history">
+    <thead><tr><th>Time</th><th>Host entered</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for h in history %}
+        <tr>
+          <td>{{ h.time }}</td>
+          <td>{{ h.host }}</td>
+          <td class="{{ 'ok' if h.status == 'allowed' else 'err' }}">{{ h.status }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<p><a href="{{ url_for('cmd_vulnerable') }}">&larr; Switch to vulnerable version</a></p>
+<p><a href="{{ url_for('index') }}">&larr; Home</a></p>
+
+<script>
+  document.getElementById('pingFormSecure').addEventListener('submit', function () {
+    var btn = document.getElementById('submitBtnSecure');
+    btn.disabled = true;
+    btn.textContent = 'Running...';
+  });
+</script>
+{% endblock %}

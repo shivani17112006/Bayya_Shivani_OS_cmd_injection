@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Vulnerable{% endblock %}
+{% block content %}
+<h1 class="vuln-title">Vulnerable ping tool</h1>
+<p>Host is concatenated into a shell command. Try:
+   <code>127.0.0.1; whoami</code> (or on Windows: <code>127.0.0.1 && whoami</code>)</p>
+
+<form method="post" id="pingForm">
+  <label>Host <input type="text" name="host" placeholder="127.0.0.1" autocomplete="off" required></label>
+  <button type="submit" id="submitBtn">Ping</button>
+</form>
+
+{% if error %}
+  <p class="err">{{ error }}</p>
+{% endif %}
+
+{% if command_shown %}
+  <h3>Command executed on the server:</h3>
+  <pre>{{ command_shown }}</pre>
+{% endif %}
+
+{% if output %}
+  <h3>Output:</h3>
+  <pre class="output">{{ output }}</pre>
+{% endif %}
+
+{% if history %}
+  <h3>Recent attempts (this session)</h3>
+  <table class="history">
+    <thead><tr><th>Time</th><th>Host entered</th><th>Command run</th></tr></thead>
+    <tbody>
+      {% for h in history %}
+        <tr><td>{{ h.time }}</td><td>{{ h.host }}</td><td>{{ h.command }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<p><a href="{{ url_for('cmd_secure') }}">Switch to secure version &rarr;</a></p>
+<p><a href="{{ url_for('index') }}">&larr; Home</a></p>
+
+<script>
+  // Small UX touch: disable the button while the request is in flight so you
+  // can't double-submit (the ping/exploit can take a second or two).
+  document.getElementById('pingForm').addEventListener('submit', function () {
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Running...';
+  });
+</script>
+{% endblock %}
